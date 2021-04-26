@@ -1,4 +1,4 @@
-package fitbitData
+package fitbitAPI
 
 import (
 	"encoding/json"
@@ -59,3 +59,103 @@ func UnmarshalSleep(data []byte) ([]Sleep, error) {
 
 	return tmp.Sleep, err
 }
+
+// type WebRequest struct {
+// 	RequestType string `json:"request"`
+// }
+
+// type SleepRequest struct {
+// 	StartDate string `schema:"startDate"`
+// 	EndDate   string `schema:"endDate"`
+// }
+
+// type SleepResponse struct {
+// 	Dates      []string `json:"dates"`
+// 	DeepSleep  []int32  `json:"deepSleep"`
+// 	LightSleep []int32  `json:"lightSleep"`
+// 	RemSleep   []int32  `json:"remSleep"`
+// 	Wake       []int32  `json:"wake"`
+// }
+
+// func handleSleepRequest(w http.ResponseWriter, r *http.Request) {
+// 	// fmt.Println(r.RequestURI)
+// 	// fmt.Printf("[%d] %s\n", time.Now().Unix(), "Sleep Request")
+
+// 	// defer r.Body.Close()
+// 	// body, err := ioutil.ReadAll(r.Body)
+// 	// if err != nil {
+// 	// 	fmt.Println("{}", err.Error())
+// 	// }
+
+// 	// var data SleepRequest
+// 	// err = schema.NewDecoder().Decode(&data, r.URL.Query())
+// 	// if err != nil {
+// 	// 	fmt.Println(err.Error())
+// 	// }
+
+// 	// url := fitbitData.SleepUrl + data.StartDate + "/" + data.EndDate + ".json"
+// 	// fmt.Println(url)
+// 	// req, err := http.NewRequest("GET", url, nil)
+// 	// if err != nil {
+// 	// 	fmt.Println(err.Error())
+// 	// }
+
+// 	// req.Header.Set("Authorization", "Bearer "+RespData.AccessToken)
+// 	// resp, err := CLIENT.Do(req)
+// 	// if err != nil {
+// 	// 	fmt.Println("{}", err.Error())
+// 	// }
+
+// 	// defer resp.Body.Close()
+
+// 	// body, err = ioutil.ReadAll(resp.Body)
+// 	// if err != nil {
+// 	// 	fmt.Println("{}", err.Error())
+// 	// }
+
+// 	// sleep, err := fitbitData.UnmarshalSleep(body)
+// 	// if err != nil {
+// 	// 	fmt.Println("{}", err.Error())
+// 	// }
+
+// 	// // Creating the sleep data response
+// 	// w.Header().Set("Content-Type", "application/json")
+// 	// w.Header().Set("Access-Control-Allow-Origin", "*")
+
+// 	// /* Setup the last 7 days */
+
+// 	// /*
+// 	// 	type SleepStage struct {
+// 	// 		Count            int32 `json:"count"`
+// 	// 		Minutes          int32 `json:"minutes"`
+// 	// 		ThirtyDayAvgMins int32 `json:"thirtyDayAvgMinutes"`
+// 	// 	}
+// 	// */
+// 	// sleepResponse := SleepResponse{}
+// 	// for i := len(sleep) - 1; i >= 0; i-- {
+// 	// 	summary := &sleep[i].Levels.Summary
+// 	// 	sleepResponse.Dates = append(sleepResponse.Dates, sleep[i].Date)
+// 	// 	sleepResponse.DeepSleep = append(sleepResponse.DeepSleep, summary.Deep.Minutes)
+// 	// 	sleepResponse.LightSleep = append(sleepResponse.LightSleep, summary.Light.Minutes)
+// 	// 	sleepResponse.RemSleep = append(sleepResponse.RemSleep, summary.Rem.Minutes)
+// 	// 	sleepResponse.Wake = append(sleepResponse.Wake, summary.Wake.Minutes)
+// 	// }
+
+// 	// json.NewEncoder(w).Encode(sleepResponse)
+
+// 	// var sleepDuration int32 = 0
+// 	// var longData = &sleep[0].Levels.LongData
+// 	// for i := 0; i < len(*longData); i++ {
+// 	// 	level := (*longData)[i].Level
+// 	// 	if level == "light" || level == "deep" || level == "rem" {
+// 	// 		sleepDuration += (*longData)[i].Seconds
+// 	// 	}
+// 	// }
+// 	// fmt.Println(sleepDuration)
+// 	// fmt.Println(sleep[0].Date)
+// 	// fmt.Println(sleep[0].Duration)
+// 	// fmt.Println(sleep[0].Efficiency)
+// 	// fmt.Println(sleep[0].EndTime)
+// 	// fmt.Println(sleep[0].InfoCode)
+
+// }

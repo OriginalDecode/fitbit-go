@@ -1,4 +1,4 @@
-package fitbitData
+package fitbitAPI
 
 import (
 	"encoding/json"
