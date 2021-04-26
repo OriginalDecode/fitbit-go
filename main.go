@@ -6,11 +6,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/schema"
+	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/fitbit"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 )
@@ -27,12 +30,15 @@ const (
 	ScopeWeight    = "weight"
 )
 
+var (
+	CLIENT_ID     string = "WILL_BE_REPLACED"
+	CLIENT_SECRET string = "WILL_BE_REPLACED"
+)
+
 const (
-	CLIENT_ID     string = "CLIENT_ID"
-	CLIENT_SECRET string = "CLIENT_SECRET"
-	API_URL       string = "https://api.fitbit.com"
-	TOKEN_URL     string = "https://api.fitbit.com/oauth2/token"
-	AUTH_URL      string = "https://www.fitbit.com/oauth2/authorize"
+	API_URL   string = "https://api.fitbit.com"
+	TOKEN_URL string = "https://api.fitbit.com/oauth2/token"
+	AUTH_URL  string = "https://www.fitbit.com/oauth2/authorize"
 )
 
 type AuthenticationData struct {
@@ -295,6 +301,13 @@ func handleAuth(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	CLIENT_ID = os.Getenv("FITBITAPI_CLIENT_ID")
+	CLIENT_SECRET = os.Getenv("FITBITAPI_CLIENT_SECRET")
 
 	oauth2Config = &oauth2.Config{
 		RedirectURL:  "http://127.0.0.1:8080/callback",
