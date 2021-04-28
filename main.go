@@ -5,7 +5,6 @@ import (
 	// "encoding/base64"
 	// "encoding/json"
 	"fmt"
-	// "github.com/gorilla/schema"
 	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/fitbit"
@@ -16,18 +15,6 @@ import (
 	"os"
 	// "strings"
 	// "time"
-)
-
-const (
-	ScopeActivity  = "activity"
-	ScopeHeartrate = "heartrate"
-	ScopeLocation  = "location"
-	ScopeNutrition = "nutrition"
-	ScopeProfile   = "profile" // is this what I request?
-	ScopeSettings  = "settings"
-	ScopeSleep     = "sleep"
-	ScopeSocial    = "social"
-	ScopeWeight    = "weight"
 )
 
 const (
@@ -56,12 +43,14 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	scopes := fitbitAPI.GetScopes()
+
 	oauth2Config = &oauth2.Config{
 		RedirectURL:  "http://127.0.0.1:8080/callback/",
 		ClientID:     os.Getenv("FITBITAPI_CLIENT_ID"),
 		ClientSecret: os.Getenv("FITBITAPI_CLIENT_SECRET"),
 		Endpoint:     fitbit.Endpoint,
-		Scopes:       []string{ScopeProfile},
+		Scopes:       []string{scopes.Profile},
 	}
 
 	fitbitAPI.Auth(oauth2Config, "/login", "/callback/")
