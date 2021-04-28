@@ -2,13 +2,14 @@ package fitbitAPI
 
 import (
 	"encoding/base64"
-	"encoding/json"
-	"fmt"
+	// "encoding/json"
+	// "github.com/gorilla/schema"
 	"golang.org/x/oauth2"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -32,24 +33,16 @@ func getAuthKey() string {
 	return base64.StdEncoding.EncodeToString([]byte(oauth2Config.ClientID + ":" + oauth2Config.ClientSecret))
 }
 
-func parseCallback(r *http.Request) AuthenticationData {
-	defer r.Body.Close()
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Println("Failed to read response body:", err.Error())
-	}
-	var data AuthenticationData
-	err = json.Unmarshal([]byte(body), &data)
-	if err != nil {
-		log.Println("Failed to unmarshal initial auth data:", err.Error())
-	}
-	return data
-}
-
 /*
 	returns the body of the response
 */
 func authRequest(authCode string) []byte {
+
+	if len(authCode) <= 0 {
+		log.Println("No valid auth code was provided", authCode)
+		os.Exit(1)
+	}
+	log.Println("AuthCode:", authCode)
 	requestBody := url.Values{}
 	requestBody.Set("code", authCode)
 	requestBody.Set("grant_type", "authorization_code")
@@ -83,10 +76,11 @@ func authRequest(authCode string) []byte {
 /*
  */
 func callback(w http.ResponseWriter, r *http.Request) {
-	data := parseCallback(r)
-	body := authRequest(data.Code)
+	query := r.URL.Query()
+	body := authRequest(query.Get("code"))
 
 	authResp, err := UnmarshalAuth([]byte(body))
+	log.Println("respons:", authResp)
 	if err != nil {
 		log.Println("Failed to unmarshal auth data:", err.Error())
 	}
