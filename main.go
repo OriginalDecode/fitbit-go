@@ -21,19 +21,7 @@ const (
 	API_URL string = "https://api.fitbit.com"
 )
 
-var AuthData fitbitAPI.AuthenticationData
-var RespData fitbitAPI.AuthResponse
-var Client = http.DefaultClient
 var oauth2Config *oauth2.Config
-
-func handleMain(w http.ResponseWriter, r *http.Request) {
-	var htmlIndex = `<html>
-<body>
-	<a href="/login">Fitbit Log In</a>
-</body>
-</html>`
-	fmt.Fprintf(w, htmlIndex)
-}
 
 func main() {
 	fmt.Println("Starting fitbit-fetcher")
@@ -44,19 +32,17 @@ func main() {
 	}
 
 	scopes := fitbitAPI.GetScopes()
-
 	oauth2Config = &oauth2.Config{
 		RedirectURL:  "http://127.0.0.1:8080/callback/",
 		ClientID:     os.Getenv("FITBITAPI_CLIENT_ID"),
 		ClientSecret: os.Getenv("FITBITAPI_CLIENT_SECRET"),
 		Endpoint:     fitbit.Endpoint,
-		Scopes:       []string{scopes.Profile},
+		Scopes:       []string{scopes.Profile, scopes.Weight},
 	}
 
 	fitbitAPI.Auth(oauth2Config, "/login", "/callback/")
 
-	http.HandleFunc("/", handleMain)
-	// http.HandleFunc("/callback/", handleCallback)
-	http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/v1/request", fitbitAPI.Request)
+	http.ListenAndServe(":"+os.Getenv("FITBITAPI_PORT"), nil)
 
 }

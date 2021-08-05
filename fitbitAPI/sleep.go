@@ -2,9 +2,13 @@ package fitbitAPI
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"time"
 )
 
-const SleepUrl = "https://api.fitbit.com/1.2/user/-/sleep/date/"
+const sleepURL = "https://api.fitbit.com/1.2/user/-/sleep/date/"
 
 type SleepStage struct {
 	Count            int32 `json:"count"`
@@ -49,33 +53,52 @@ type Sleep struct {
 	Type                string    `json:"type"`
 }
 
-type _Sleep struct {
+type SleepRequest struct {
+	StartDate string `schema:"startDate"`
+	EndDate   string `schema:"endDate"`
+}
+
+type SleepResponse struct {
+	Dates      []string `json:"dates"`
+	DeepSleep  []int32  `json:"deepSleep"`
+	LightSleep []int32  `json:"lightSleep"`
+	RemSleep   []int32  `json:"remSleep"`
+	Wake       []int32  `json:"wake"`
+}
+type sleep struct {
 	Sleep []Sleep `json:"sleep"`
 }
 
 func UnmarshalSleep(data []byte) ([]Sleep, error) {
-	var tmp _Sleep
+	var tmp sleep
 	err := json.Unmarshal(data, &tmp)
-
 	return tmp.Sleep, err
 }
 
-// type WebRequest struct {
-// 	RequestType string `json:"request"`
-// }
+func RequestSleep(nowStr string, thenStr string) []byte {
+	url := weightURL + thenStr + "/" + nowStr + ".json"
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Println(err.Error())
+	}
 
-// type SleepRequest struct {
-// 	StartDate string `schema:"startDate"`
-// 	EndDate   string `schema:"endDate"`
-// }
+	client := &http.Client{Timeout: time.Second * 10}
 
-// type SleepResponse struct {
-// 	Dates      []string `json:"dates"`
-// 	DeepSleep  []int32  `json:"deepSleep"`
-// 	LightSleep []int32  `json:"lightSleep"`
-// 	RemSleep   []int32  `json:"remSleep"`
-// 	Wake       []int32  `json:"wake"`
-// }
+	req.Header.Set("Authorization", "Bearer "+GetAccessToken())
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal("Error reading body. ", err)
+	}
+
+	return body
+}
 
 // func handleSleepRequest(w http.ResponseWriter, r *http.Request) {
 // 	// fmt.Println(r.RequestURI)

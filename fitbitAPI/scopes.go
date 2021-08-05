@@ -1,5 +1,9 @@
 package fitbitAPI
 
+import (
+	"reflect"
+)
+
 type Scopes struct {
 	Activity  string
 	Heartrate string
@@ -24,4 +28,18 @@ func GetScopes() Scopes {
 		Social:    "social",
 		Weight:    "weight",
 	}
+}
+
+func ValidScope(scope string) bool {
+	scopes := GetScopes()
+	s := reflect.ValueOf(&scopes).Elem()
+	for i := 0; i < s.NumField(); i++ {
+		f := s.Field(i)
+		// fmt.Printf("%d: %s %s = %v\n", i, typeOfT.Field(i).Name, f.Type(), f.Interface())
+		if scope == f.Interface() {
+			return true
+		}
+
+	}
+	return false
 }
